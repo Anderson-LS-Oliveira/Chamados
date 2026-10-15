@@ -1,9 +1,11 @@
 package br.com.sistemas.chamados.entity;
 
-import jakarta.annotation.Generated;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "clientes")
@@ -13,13 +15,13 @@ public class Cliente {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
-    @Collumn(nullable = false, lenght = 120)
+    @Column(nullable = false, length = 120)
     private String nome;
 
-    @Collumn(nullable = false, unique = true, lenght = 120)
+    @Column(nullable = false, unique = true, length = 120)
     private String email;
 
-    @Collumn(lenght = 20)
+    @Column(length = 20)
     private String telefone;
 
     public Cliente() {}
