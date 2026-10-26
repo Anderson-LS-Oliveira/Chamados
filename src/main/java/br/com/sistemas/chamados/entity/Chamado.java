@@ -1,6 +1,8 @@
 package br.com.sistemas.chamados.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.sistemas.chamados.enums.Prioridade;
 import br.com.sistemas.chamados.enums.Status;
@@ -15,7 +17,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.CascadeType;
 
 
 @Entity 
@@ -57,6 +61,9 @@ public class Chamado {
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
+
+    @OneToMany(mappedBy = "chamado", cascade = CascadeType.REMOVE)
+    private List<Comentario> comentarios;
 
     public Chamado() {}
 

@@ -19,15 +19,19 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import br.com.sistemas.chamados.dto.ChamadoDetalheResponse;
+import br.com.sistemas.chamados.service.ComentarioService;
 
 
 @RestController 
 @RequestMapping ("/chamados")
 public class ChamadoController {
     private final ChamadoService service;
+    private final ComentarioService comentarioService;
 
-    public ChamadoController(ChamadoService service) {
+    public ChamadoController(ChamadoService service, ComentarioService comentarioService) {
         this.service = service;
+        this.comentarioService = comentarioService;
     }
 
     @PostMapping
@@ -42,8 +46,8 @@ public class ChamadoController {
     }
 
     @GetMapping("/{id}")
-    public ChamadoResponse buscar(@PathVariable Long id) {
-        return service.buscar(id);
+    public ChamadoDetalheResponse buscar(@PathVariable Long id) {
+        return new ChamadoDetalheResponse(service.buscar(id), comentarioService.listar(id));
     }
 
     @PutMapping("/{id}")
