@@ -2,6 +2,9 @@ package br.com.sistemas.chamados.entity;
 
 import java.time.LocalDateTime;
 
+import br.com.sistemas.chamados.enums.Prioridade;
+import br.com.sistemas.chamados.enums.Status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

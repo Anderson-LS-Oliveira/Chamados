@@ -1,4 +1,4 @@
-package br.com.sistemas.chamados.entity;
+package br.com.sistemas.chamados.enums;
 
 public enum Prioridade {
     

@@ -11,7 +11,7 @@ import br.com.sistemas.chamados.entity.Tecnico;
 import br.com.sistemas.chamados.exception.RecursoNaoEncontradoException;
 import br.com.sistemas.chamados.exception.RegraNegocioException;
 import br.com.sistemas.chamados.repository.TecnicoRepository;
-import br.com.sistemas.chamados.entity.Perfil;
+import br.com.sistemas.chamados.enums.Perfil;
 
 
 @Service 
