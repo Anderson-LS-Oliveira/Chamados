@@ -1,6 +1,7 @@
 package br.com.sistemas.chamados.service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import br.com.sistemas.chamados.repository.ClienteRepository;
 import br.com.sistemas.chamados.repository.CategoriaRepository;
 import br.com.sistemas.chamados.repository.TecnicoRepository;
 import br.com.sistemas.chamados.entity.Tecnico;
+import br.com.sistemas.chamados.exception.RecursoNaoEncontradoException;
 import br.com.sistemas.chamados.exception.RegraNegocioException;
 import br.com.sistemas.chamados.repository.ChamadoRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,9 +54,12 @@ public class ChamadoService {
             () -> new RegraNegocioException("Categoria não encontrada com o id " + dto.categoriaId())
         );
 
-        Tecnico tecnico = tecnicoRepository.findById(dto.tecnicoId()).orElseThrow(
-            () -> new RegraNegocioException("Técnico não encontrado com o id " + dto.tecnicoId())
-        );
+        Tecnico tecnico = null;
+        if (dto.tecnicoId() != null) {
+            tecnicoRepository.findById(dto.tecnicoId()).orElseThrow(
+                () -> new RecursoNaoEncontradoException("Técnico não encontrado com o id " + dto.tecnicoId())
+            );
+        }
 
 
         Chamado salvo = repository.save(new Chamado(
@@ -109,13 +114,32 @@ public class ChamadoService {
             throw new RegraNegocioException("Não é possível alterar o status de um chamado fechado.");
         }
 
+        if (status != Status.ABERTO && chamado.getTecnico() == null) {
+                throw new RegraNegocioException("Chamado precisa de um técnico atribuido para mudar status");
+        }
+
         chamado.setStatus(status);
+
         if (status == Status.FECHADO) {
-            chamado.setDataFechamento(java.time.LocalDateTime.now());
+            chamado.setDataFechamento(LocalDateTime.now());
         }
         return ChamadoResponse.de(chamado);
-        
 
+    }
+
+    @Transactional
+    public ChamadoResponse atribuirTecnico(Long id, Long tecnicoId) {
+        Chamado chamado = buscarEntity(id);
+        if (chamado.getStatus() == Status.FECHADO) {
+            throw new RegraNegocioException("Não é possível atribuir técnico a um chamado fechado.");
+        }
+        Tecnico tecnico = tecnicoRepository.findById(tecnicoId).orElseThrow(
+            () -> new RecursoNaoEncontradoException("Técnico não encontrado com o id " + tecnicoId));
+        chamado.setTecnico(tecnico);
+        if (chamado.getStatus() == Status.ABERTO){
+            chamado.setStatus(Status.EM_ATENDIMENTO);
+        }
+        return ChamadoResponse.de(chamado);
     }
 
     @Transactional
@@ -125,7 +149,7 @@ public class ChamadoService {
 
     private Chamado buscarEntity(Long id) {
         return repository.findById(id).orElseThrow(
-            () -> new RegraNegocioException("Chamado não encontrado com o id " + id)
+            () -> new RecursoNaoEncontradoException("Chamado não encontrado com o id " + id)
         );
     }
 

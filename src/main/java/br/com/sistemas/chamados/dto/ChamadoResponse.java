@@ -26,7 +26,7 @@ public record ChamadoResponse(
             c.getDataAbertura(),
             c.getDataFechamento(),
             c.getCliente().getId(),
-            c.getTecnico().getId(),
+            c.getTecnico() != null ? c.getTecnico().getId() : null,
             c.getCategoria().getId()
         );
     }

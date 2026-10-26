@@ -11,9 +11,11 @@ import br.com.sistemas.chamados.service.ChamadoService;
 import br.com.sistemas.chamados.dto.ChamadoRequest;
 import br.com.sistemas.chamados.dto.ChamadoResponse;
 import br.com.sistemas.chamados.dto.AtualizarStatusRequest;
+import br.com.sistemas.chamados.dto.AtribuirTecnicoRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,11 +51,18 @@ public class ChamadoController {
         return service.atualizar(id, dto);
     }
 
-    @PutMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     public ChamadoResponse atualizarStatus(
         @PathVariable Long id,
         @Valid @RequestBody AtualizarStatusRequest dto) {
-    return service.atualizarStatus(id, dto.status());
+        return service.atualizarStatus(id, dto.status());
+    }
+
+    @PatchMapping("/{id}/atribuir")
+    public ChamadoResponse atribuir(
+        @PathVariable Long id,
+        @Valid @RequestBody AtribuirTecnicoRequest dto){
+        return service.atribuirTecnico(id, dto.tecnicoId());
     }
 
     @DeleteMapping("/{id}")
