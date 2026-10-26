@@ -21,6 +21,8 @@ import br.com.sistemas.chamados.exception.RecursoNaoEncontradoException;
 import br.com.sistemas.chamados.exception.RegraNegocioException;
 import br.com.sistemas.chamados.repository.ChamadoRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 @Service 
@@ -56,7 +58,7 @@ public class ChamadoService {
 
         Tecnico tecnico = null;
         if (dto.tecnicoId() != null) {
-            tecnicoRepository.findById(dto.tecnicoId()).orElseThrow(
+            tecnico = tecnicoRepository.findById(dto.tecnicoId()).orElseThrow(
                 () -> new RecursoNaoEncontradoException("Técnico não encontrado com o id " + dto.tecnicoId())
             );
         }
@@ -74,8 +76,8 @@ public class ChamadoService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChamadoResponse> listar() {
-        return repository.findAll().stream().map(ChamadoResponse::de).toList();
+    public Page<ChamadoResponse> listar(Status status, Prioridade prioridade, Long clienteId, Pageable pageable) {
+        return repository.filtrar(status, prioridade, clienteId, pageable).map(ChamadoResponse::de);
     }
 
     @Transactional(readOnly = true)

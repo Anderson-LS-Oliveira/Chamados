@@ -18,15 +18,21 @@ import br.com.sistemas.chamados.dto.ClienteResponse;
 import br.com.sistemas.chamados.service.ClienteService;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import br.com.sistemas.chamados.dto.ChamadoResponse;
+import br.com.sistemas.chamados.service.ChamadoService;
 
 @RestController 
 @RequestMapping ("/clientes")
 public class ClienteController {
     
     private final ClienteService service;
+    private final ChamadoService chamadoService;
 
-    public ClienteController(ClienteService service) {
+    public ClienteController(ClienteService service, ChamadoService chamadoService) {
         this.service = service;
+        this.chamadoService = chamadoService;
     }
 
     @PostMapping 
@@ -45,6 +51,12 @@ public class ClienteController {
     @GetMapping("/{id}")
     public ClienteResponse buscar(@PathVariable Long id) {
         return service.buscar(id);
+    }
+
+    @GetMapping("/{id}/chamados")
+    public Page<ChamadoResponse> chamadosDoCliente(@PathVariable Long id, Pageable pageable) {
+        service.buscar(id);
+        return chamadoService.listar(null, null, id, pageable);
     }
 
     @PutMapping("/{id}")
