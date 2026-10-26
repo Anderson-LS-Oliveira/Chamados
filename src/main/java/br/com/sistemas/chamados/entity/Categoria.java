@@ -5,7 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.List;
 
 @Entity 
 @Table(name = "categorias")
@@ -20,6 +23,9 @@ public class Categoria {
 
     @Column (nullable = false, length = 255)
     private String descricao;
+
+    @OneToMany (mappedBy = "categoria")
+    private List<Chamado> chamados;
 
     public Categoria() {}
 

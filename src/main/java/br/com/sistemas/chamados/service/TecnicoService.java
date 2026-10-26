@@ -30,7 +30,7 @@ public class TecnicoService {
                 "Já existe técnico com o e-mail " + dto.email()
             );
         }
-        Tecnico salvo = repository.save(new Tecnico(dto.nome(), dto.email(), dto.perfil()));
+        Tecnico salvo = repository.save(new Tecnico(dto.nome(), dto.email(), Perfil.valueOf(dto.perfil())));
         return TecnicoResponse.de(salvo);
     }
 

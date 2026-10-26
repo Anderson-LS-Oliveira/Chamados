@@ -9,6 +9,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 
+import jakarta.persistence.OneToMany;
+import java.util.List;
+
 
 @Entity 
 @Table(name = "tecnicos")
@@ -28,12 +31,15 @@ public class Tecnico {
     @Column (nullable = false, length = 20)
     private Perfil perfil;
 
+    @OneToMany(mappedBy = "tecnico")
+    private List<Chamado> chamados;
+
     public Tecnico() {}
 
-    public Tecnico(String nome, String email, String perfil) {
+    public Tecnico(String nome, String email, Perfil perfil) {
         this.nome = nome;
         this.email = email;
-        this.perfil = Perfil.valueOf(perfil);
+        this.perfil = perfil;
     }
 
     public Long getId() {

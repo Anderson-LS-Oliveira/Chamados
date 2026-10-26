@@ -28,7 +28,11 @@ public class ClienteService {
                 "Já existe cliente com o e-mail " + dto.email()
             );
         }
-         Cliente salvo = repository.save(new Cliente(dto.nome(), dto.email(), dto.telefone()));
+         Cliente salvo = repository.save(new Cliente(
+            dto.nome(), 
+            dto.email(), 
+            dto.telefone()
+        ));
          return ClienteResponse.de(salvo);
     }
 
