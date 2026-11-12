@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chamados')}"></head>
+<body>
+<aside th:replace="~{fragments/layout :: sidebar('chamados')}"></aside>
+<main class="conteudo">
+  <div th:replace="~{fragments/layout :: topo('Chamados', 'Acompanhe e filtre os atendimentos', '/web/chamados/novo', 'Abrir chamado')}"></div>
+  <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+  <form class="card-x barra" th:action="@{/web/chamados}" method="get">
+    <div class="busca"><i class="bi bi-search"></i>
+      <input type="search" class="form-control" placeholder="Buscar nesta página..." data-filtrar="#tabela"></div>
+    <select name="status" class="form-select" aria-label="Status">
+      <option value="">Todos os status</option>
+      <option th:each="s : ${statusOpcoes}" th:value="${s}" th:text="${s}"
+              th:selected="${status != null and status.toString() == s.toString()}"></option>
+    </select>
+    <select name="prioridade" class="form-select" aria-label="Prioridade">
+      <option value="">Todas as prioridades</option>
+      <option th:each="p : ${prioridadeOpcoes}" th:value="${p}" th:text="${p}"
+              th:selected="${prioridade != null and prioridade.toString() == p.toString()}"></option>
+    </select>
+    <select name="clienteId" class="form-select" aria-label="Cliente">
+      <option value="">Todos os clientes</option>
+      <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nome}"
+              th:selected="${clienteId != null and clienteId == c.id}"></option>
+    </select>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-funnel"></i> Filtrar</button>
+    <a class="btn btn-light" th:href="@{/web/chamados}">Limpar</a>
+  </form>
+
+  <div class="card-x barra"><div class="busca"><i class="bi bi-search"></i>
+  <input type="search" class="form-control" placeholder="Buscar..." data-filtrar="#tabela"></div></div>
+  
+  <div class="card-x tabela">
+    <div class="vazio" th:if="${chamados.empty}"><i class="bi bi-inbox"></i>Nenhum chamado encontrado com esses filtros.</div>
+    <div class="table-responsive" th:unless="${chamados.empty}">
+      <table class="table" id="tabela">
+        <thead><tr><th>#</th><th>Título</th><th>Prioridade</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr th:each="c : ${chamados.content}">
+            <td class="text-secondary" th:text="${c.id}"></td>
+            <td class="fw-medium"><a class="text-decoration-none text-dark" th:href="@{/web/chamados/{id}(id=${c.id})}" th:text="${c.titulo}"></a></td>
+            <td><span th:replace="~{fragments/layout :: prioridade(${c.prioridade})}"></span></td>
+            <td><span th:replace="~{fragments/layout :: status(${c.status})}"></span></td>
+            <td class="text-end"><a class="btn-icone" th:href="@{/web/chamados/{id}(id=${c.id})}" title="Abrir"><i class="bi bi-arrow-right-circle"></i></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rodape-tabela" th:unless="${chamados.empty}">
+      <a class="btn btn-sm btn-outline-secondary" th:classappend="${!chamados.hasPrevious()} ? 'disabled'"
+         th:href="@{/web/chamados(page=${chamados.number - 1}, status=${status}, prioridade=${prioridade}, clienteId=${clienteId})}">Anterior</a>
+      <small class="text-secondary" th:text="'Página ' + ${chamados.number + 1} + ' de ' + ${chamados.totalPages}"></small>
+      <a class="btn btn-sm btn-outline-secondary" th:classappend="${!chamados.hasNext()} ? 'disabled'"
+         th:href="@{/web/chamados(page=${chamados.number + 1}, status=${status}, prioridade=${prioridade}, clienteId=${clienteId})}">Próxima</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

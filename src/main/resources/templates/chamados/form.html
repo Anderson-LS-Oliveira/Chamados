@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Abrir chamado')}"></head>
+<body>
+<aside th:replace="~{fragments/layout :: sidebar('chamados')}"></aside>
+<main class="conteudo">
+  <div th:replace="~{fragments/layout :: topo('Abrir chamado', 'Um técnico será atribuído depois da abertura', null, null)}"></div>
+
+  <form class="card-x form-card" th:action="@{/web/chamados}" method="post">
+    <div class="alert alert-danger" th:if="${erros != null and !#lists.isEmpty(erros)}">
+      <ul class="mb-0"><li th:each="e : ${erros}" th:text="${e}"></li></ul></div>
+
+    <div class="mb-3"><label class="form-label" for="titulo">Título</label>
+      <input id="titulo" name="titulo" class="form-control" maxlength="120" required
+             placeholder="Ex.: Computador não liga" th:value="${form?.titulo()}"></div>
+
+    <div class="mb-3"><label class="form-label" for="descricao">Descrição</label>
+      <textarea id="descricao" name="descricao" class="form-control" rows="4" maxlength="1000" required
+                data-contador="#cont" placeholder="Explique o que aconteceu e desde quando."
+                th:text="${form?.descricao()}"></textarea>
+      <div class="dica text-end" id="cont"></div></div>
+
+    <div class="mb-3"><label class="form-label">Prioridade</label>
+      <div class="prio">
+        <input type="radio" class="btn-check" name="prioridade" id="p1" value="BAIXA" th:checked="${form?.prioridade() == 'BAIXA'}">
+        <label class="btn btn-outline-secondary btn-p-baixa" for="p1">Baixa</label>
+        <input type="radio" class="btn-check" name="prioridade" id="p2" value="MEDIA" th:checked="${form == null or form.prioridade() == 'MEDIA'}">
+        <label class="btn btn-outline-secondary btn-p-media" for="p2">Média</label>
+        <input type="radio" class="btn-check" name="prioridade" id="p3" value="ALTA" th:checked="${form?.prioridade() == 'ALTA'}">
+        <label class="btn btn-outline-secondary btn-p-alta" for="p3">Alta</label>
+        <input type="radio" class="btn-check" name="prioridade" id="p4" value="CRITICA" th:checked="${form?.prioridade() == 'CRITICA'}">
+        <label class="btn btn-outline-secondary btn-p-critica" for="p4">Crítica</label>
+      </div></div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6"><label class="form-label" for="clienteId">Cliente</label>
+        <select id="clienteId" name="clienteId" class="form-select" required>
+          <option th:each="c : ${clientes}" th:value="${c.id}" th:text="${c.nome}"
+                  th:selected="${form != null and form.clienteId() == c.id}"></option></select></div>
+      <div class="col-md-6"><label class="form-label" for="categoriaId">Categoria</label>
+        <select id="categoriaId" name="categoriaId" class="form-select" required>
+          <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nome}"
+                  th:selected="${form != null and form.categoriaId() == c.id}"></option></select></div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+      <button class="btn btn-primary" type="submit"><i class="bi bi-send"></i> Abrir chamado</button>
+      <a class="btn btn-light" th:href="@{/web/chamados}">Cancelar</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

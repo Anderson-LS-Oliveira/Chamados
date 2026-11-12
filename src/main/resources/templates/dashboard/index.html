@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Painel')}"></head>
+<body>
+<aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+<main class="conteudo">
+  <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+  <section class="card-x hero">
+    <div><h2>Bem-vindo à central de chamados</h2>
+      <p><span th:text="${totalAbertos}">0</span> chamados aguardando atendimento.</p></div>
+    <a class="btn" th:href="@{/web/chamados/novo}"><i class="bi bi-plus-lg"></i> Abrir chamado</a>
+  </section>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3"><a class="card-x stat" th:href="@{/web/chamados}">
+      <span class="ico ico-cinza"><i class="bi bi-collection"></i></span>
+      <span><strong th:text="${totalChamados}">0</strong><small>chamados no total</small></span></a></div>
+    <div class="col-6 col-xl-3"><a class="card-x stat" th:href="@{/web/chamados(status='ABERTO')}">
+      <span class="ico ico-azul"><i class="bi bi-envelope-open"></i></span>
+      <span><strong th:text="${totalAbertos}">0</strong><small>abertos</small></span></a></div>
+    <div class="col-6 col-xl-3"><a class="card-x stat" th:href="@{/web/chamados(status='EM_ATENDIMENTO')}">
+      <span class="ico ico-amar"><i class="bi bi-tools"></i></span>
+      <span><strong th:text="${totalEmAtendimento}">0</strong><small>em atendimento</small></span></a></div>
+    <div class="col-6 col-xl-3"><a class="card-x stat" th:href="@{/web/chamados(status='FECHADO')}">
+      <span class="ico ico-verde"><i class="bi bi-check2-circle"></i></span>
+      <span><strong th:text="${totalFechados}">0</strong><small>fechados</small></span></a></div>
+  </div>
+
+  <section class="card-x p-4 mb-4" th:if="${totalChamados > 0}">
+    <strong>Distribuição por status</strong>
+    <div class="dist mt-3">
+      <span class="seg-aberto" th:style="'width:' + ${totalAbertos * 100 / totalChamados} + '%'"></span>
+      <span class="seg-atend" th:style="'width:' + ${totalEmAtendimento * 100 / totalChamados} + '%'"></span>
+      <span class="seg-fechado" th:style="'width:' + ${totalFechados * 100 / totalChamados} + '%'"></span>
+    </div>
+    <div class="legenda">
+      <span><i class="seg-aberto"></i>Abertos</span>
+      <span><i class="seg-atend"></i>Em atendimento</span>
+      <span><i class="seg-fechado"></i>Fechados</span>
+    </div>
+  </section>
+
+  <div class="row g-3 mb-4">
+    <div class="col-lg-8">
+      <div class="card-x tabela h-100">
+        <div class="cabeca-card"><strong>Últimos chamados</strong>
+          <a class="small text-decoration-none" th:href="@{/web/chamados}">Ver todos</a></div>
+        <div class="vazio" th:if="${#lists.isEmpty(ultimos)}"><i class="bi bi-inbox"></i>Nenhum chamado aberto ainda.</div>
+        <div class="table-responsive" th:unless="${#lists.isEmpty(ultimos)}">
+          <table class="table">
+            <thead><tr><th>Chamado</th><th>Cliente</th><th>Prioridade</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr th:each="c : ${ultimos}">
+                <td><a class="text-decoration-none text-dark fw-medium" th:href="@{/web/chamados/{id}(id=${c.id})}" th:text="${c.titulo}"></a>
+                  <small class="d-block text-secondary" th:text="${#temporals.format(c.dataAbertura, 'dd/MM/yyyy HH:mm')}"></small></td>
+                <td th:text="${c.clienteNome}"></td>
+                <td><span th:replace="~{fragments/layout :: prioridade(${c.prioridade})}"></span></td>
+                <td><span th:replace="~{fragments/layout :: status(${c.status})}"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card-x p-4 h-100">
+        <strong class="d-block mb-3">Por prioridade</strong>
+        <div class="barra-prio"><div class="linha"><span>Crítica</span><strong th:text="${prioCritica}">0</strong></div>
+          <div class="trilho"><span class="seg-critica" th:style="'width:' + ${totalChamados > 0 ? prioCritica * 100 / totalChamados : 0} + '%'"></span></div></div>
+        <div class="barra-prio"><div class="linha"><span>Alta</span><strong th:text="${prioAlta}">0</strong></div>
+          <div class="trilho"><span class="seg-alta" th:style="'width:' + ${totalChamados > 0 ? prioAlta * 100 / totalChamados : 0} + '%'"></span></div></div>
+        <div class="barra-prio"><div class="linha"><span>Média</span><strong th:text="${prioMedia}">0</strong></div>
+          <div class="trilho"><span class="seg-media" th:style="'width:' + ${totalChamados > 0 ? prioMedia * 100 / totalChamados : 0} + '%'"></span></div></div>
+        <div class="barra-prio"><div class="linha"><span>Baixa</span><strong th:text="${prioBaixa}">0</strong></div>
+          <div class="trilho"><span class="seg-baixa" th:style="'width:' + ${totalChamados > 0 ? prioBaixa * 100 / totalChamados : 0} + '%'"></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-md-4"><a class="card-x stat" th:href="@{/web/clientes}">
+      <span class="ico ico-azul"><i class="bi bi-people"></i></span>
+      <span><strong th:text="${totalClientes}">0</strong><small>clientes</small></span></a></div>
+    <div class="col-12 col-md-4"><a class="card-x stat" th:href="@{/web/categorias}">
+      <span class="ico ico-amar"><i class="bi bi-tags"></i></span>
+      <span><strong th:text="${totalCategorias}">0</strong><small>categorias</small></span></a></div>
+    <div class="col-12 col-md-4"><a class="card-x stat" th:href="@{/web/tecnicos}">
+      <span class="ico ico-verde"><i class="bi bi-person-gear"></i></span>
+      <span><strong th:text="${totalTecnicos}">0</strong><small>técnicos</small></span></a></div>
+  </div>
+</main>
+</body>
+</html>

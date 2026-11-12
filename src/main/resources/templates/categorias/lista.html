@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Categorias')}"></head>
+<body>
+<aside th:replace="~{fragments/layout :: sidebar('categorias')}"></aside>
+<main class="conteudo">
+  <div th:replace="~{fragments/layout :: topo('Categorias', 'Tipos de problema atendidos', '/web/categorias/novo', 'Nova categoria')}"></div>
+  <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+  <div class="card-x barra"><div class="busca"><i class="bi bi-search"></i>
+  <input type="search" class="form-control" placeholder="Buscar..." data-filtrar="#tabela"></div></div>
+  
+  <div class="card-x tabela">
+    <div class="vazio" th:if="${#lists.isEmpty(categorias)}"><i class="bi bi-tags"></i>Nenhuma categoria cadastrada.</div>
+    <div class="table-responsive" th:unless="${#lists.isEmpty(categorias)}">
+      <table class="table">
+        <thead><tr><th>Nome</th><th>Descrição</th><th></th></tr></thead>
+        <tbody>
+          <tr th:each="c : ${categorias}">
+            <td class="fw-medium" th:text="${c.nome}"></td>
+            <td class="text-secondary" th:text="${c.descricao}"></td>
+            <td class="text-end"><div class="d-inline-flex gap-1">
+              <a class="btn-icone" th:href="@{/web/categorias/{id}/editar(id=${c.id})}" title="Editar"><i class="bi bi-pencil"></i></a>
+              <form th:action="@{/web/categorias/{id}/excluir(id=${c.id})}" method="post" onsubmit="return confirm('Excluir esta categoria?');">
+                <button class="btn-icone perigo" type="submit" title="Excluir"><i class="bi bi-trash"></i></button></form></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -13,8 +13,11 @@ public record ChamadoResponse(
     LocalDateTime dataAbertura,
     LocalDateTime dataFechamento,
     Long clienteId,
+    String clienteNome,
     Long tecnicoId,
-    Long categoriaId
+    String tecnicoNome,
+    Long categoriaId,
+    String categoriaNome
 ) {
     public static ChamadoResponse de(Chamado c) {
         return new ChamadoResponse(
@@ -26,8 +29,11 @@ public record ChamadoResponse(
             c.getDataAbertura(),
             c.getDataFechamento(),
             c.getCliente().getId(),
+            c.getCliente().getNome(),
             c.getTecnico() != null ? c.getTecnico().getId() : null,
-            c.getCategoria().getId()
+            c.getTecnico() != null ? c.getTecnico().getNome() : null,
+            c.getCategoria().getId(),
+            c.getCategoria().getNome()
         );
     }
 }

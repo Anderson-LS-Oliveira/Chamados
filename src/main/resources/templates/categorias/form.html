@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${titulo})}"></head>
+<body>
+<aside th:replace="~{fragments/layout :: sidebar('categorias')}"></aside>
+<main class="conteudo">
+  <div th:replace="~{fragments/layout :: topo(${titulo}, null, null, null)}"></div>
+  <form class="card-x form-card" th:action="@{${acao}}" method="post">
+    <div class="alert alert-danger" th:if="${erros != null and !#lists.isEmpty(erros)}">
+      <ul class="mb-0"><li th:each="e : ${erros}" th:text="${e}"></li></ul></div>
+    <div class="mb-3"><label class="form-label" for="nome">Nome</label>
+      <input id="nome" name="nome" class="form-control" required th:value="${form?.nome()}"></div>
+    <div class="mb-3"><label class="form-label" for="descricao">Descrição</label>
+      <textarea id="descricao" name="descricao" class="form-control" rows="3" th:text="${form?.descricao()}"></textarea></div>
+    <div class="d-flex gap-2 mt-4">
+      <button class="btn btn-primary" type="submit">Salvar categoria</button>
+      <a class="btn btn-light" th:href="@{/web/categorias}">Cancelar</a></div>
+  </form>
+</main>
+</body>
+</html>
